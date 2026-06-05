@@ -1,0 +1,25 @@
+name: Build Addon
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Build .ankiaddon file
+        run: |
+          cd ankimorphs_sibling_manager
+          find . -name "__pycache__" -type d -exec rm -rf {} + 2>/dev/null || true
+          zip -r ../ankimorphs-sibling-manager.ankiaddon . -x "*.pyc"
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: ankimorphs-sibling-manager.ankiaddon
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
