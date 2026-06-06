@@ -1,6 +1,6 @@
 {
+  "decks": ["中文"],
   "daily_limit": 20,
-  "decks": ["中文::MODIFIED HSK", "中文::句子挖掘"],
   "tag":  "has-reviewed-sibling",
   "enabled": true
 }
