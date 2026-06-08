@@ -34,7 +34,7 @@ class SettingsDialog(QDialog):
         # centering and memory management.
         super().__init__(parent)
 
-        self.setWindowTitle("nkiMorphs Sibling Manager — Settings")
+        self.setWindowTitle("AnkiMorphs Sibling Manager Settings")
         self.setMinimumWidth(400)
 
         #Build the UI first, then populate with current values
@@ -66,15 +66,15 @@ class SettingsDialog(QDialog):
         form.addRow("Daily Limit:", self._daily_limit_spin)
 
         self._auto_tag_input = QLineEdit()
-        self._auto_tag_input.setFixedWidth(100)
+        self._auto_tag_input.setFixedWidth(255)
         form.addRow("Auto Tag:", self._auto_tag_input)
 
         self._promote_tag_input = QLineEdit()
-        self._promote_tag_input.setFixedWidth(100)
+        self._promote_tag_input.setFixedWidth(255)
         form.addRow("Promote Tag:", self._promote_tag_input)
 
         self._never_promote_tag_input = QLineEdit()
-        self._never_promote_tag_input.setFixedWidth(100)
+        self._never_promote_tag_input.setFixedWidth(255)
         form.addRow("Never Promote Tag:", self._never_promote_tag_input)
 
         # ── Decks list ────────────────────────────────────────────────────
