@@ -10,6 +10,7 @@ from aqt.operations import QueryOp
 from . import tagger
 from . import promoter
 from .config import get_decks, get_tags, is_enabled
+from .settings_dialog import SettingsDialog
 
 # ── AnkiMorphs integration ──────────────────────────────────────────────────
 
@@ -98,6 +99,7 @@ def _run_startup_promoter() -> None:
         op=lambda col: promoter.promote_daily_batch(),
         success=on_success,
     ).run_in_background()
+
 # ── Never promote (shared logic) ──────────────────────────────────────────────
 
 def _run_never_promote(parent, card_ids: list[int]) -> None:
@@ -142,6 +144,13 @@ def _run_dry_run() -> None:
 
 def setup_menu() -> None:
     menu = mw.form.menuTools.addMenu("AnkiMorphs Sibling Manager")
+
+    settings_action = QAction("Settings...", mw)
+    settings_action.triggered.connect(_open_settings)
+    menu.addAction(settings_action)
+
+    menu.addSeparator() # visual dividing line between settings and actions
+
     tag_action = QAction("Tag Reviewed Siblings", mw)
     tag_action.triggered.connect(_run_tagger_manual)
     menu.addAction(tag_action)
@@ -212,6 +221,11 @@ def setup_reviewer_context_menu(reviewer: Reviewer, menu: QMenu) -> None:
         lambda: _run_never_promote(reviewer.mw, [card.id])
     )
     menu.addAction(never_action)
+# ── Settings Menu ──────────────────────────────────────────────────────────────────
+
+def _open_settings() -> None:
+    dialog = SettingsDialog(mw)
+    dialog.exec()
 
 # ── Startup ──────────────────────────────────────────────────────────────────
 
@@ -225,3 +239,5 @@ def on_profile_open() -> None:
 gui_hooks.profile_did_open.append(on_profile_open)
 gui_hooks.browser_will_show_context_menu.append(setup_browser_context_menu)
 gui_hooks.reviewer_will_show_context_menu.append(setup_reviewer_context_menu)
+# Redirect the "Config" button in the addon manager to our settings dialog
+mw.addonManager.setConfigAction(__name__, _open_settings)

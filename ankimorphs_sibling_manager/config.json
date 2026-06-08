@@ -1,10 +1,10 @@
 {
   "decks": ["中文"],
-  "daily_limit": 200,
+  "daily_limit": 20,
   "tags": {
-    "auto_tag": "has-reviewed-sibling",
-    "promote_tag": "am-sibling-promote",
-    "never_promote_tag": "am-sibling-never-promote"
+    "auto_tag": "AM-sm::reviewed-sibling",
+    "promote_tag": "AM-sm::promote",
+    "never_promote_tag": "AM-sm::never-promote"
   },
   "enabled": true
 }

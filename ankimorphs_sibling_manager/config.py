@@ -13,6 +13,15 @@ def get_config() -> dict[str, Any]:
     with open(_CONFIG_PATH, "r", encoding="utf-8") as f:
         return json.load(f)
 
+def save_config(new_config: dict[str, Any]) -> None:
+    """
+       Writes a new config dict to config.json.
+       ensure_ascii=False preserves Chinese characters as-is instead of
+       writing them as unicode escape sequences.
+    """
+    with open(_CONFIG_PATH, "w", encoding="utf-8") as f:
+        json.dump(new_config, f, ensure_ascii=False, indent=2)
+
 def get_decks() -> list[str]:
     return get_config().get("decks", ["中文"])
 
@@ -20,9 +29,9 @@ def get_tags() -> dict[str, str]:
     return get_config().get(
         "tags",
         {
-            "auto_tag": "has-reviewed-sibling",
-            "promote_tag": "am-sibling-promote",
-            "never_promote_tag": "am-sibling-never-promote"
+            "auto_tag": "AM-sm::reviewed-sibling",
+            "promote_tag": "AM-sm::promote",
+            "never_promote_tag": "AM-sm::never-promote"
         }
     )
 
