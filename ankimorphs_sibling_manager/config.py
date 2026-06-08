@@ -16,8 +16,15 @@ def get_config() -> dict[str, Any]:
 def get_decks() -> list[str]:
     return get_config().get("decks", ["中文"])
 
-def get_tag() -> str:
-    return get_config().get("tag", "has-review-sibling")
+def get_tags() -> dict[str, str]:
+    return get_config().get(
+        "tags",
+        {
+            "auto_tag": "has-reviewed-sibling",
+            "promote_tag": "am-sibling-promote",
+            "never_promote_tag": "am-sibling-never-promote"
+        }
+    )
 
 def get_daily_limit() -> int:
     return int(get_config().get("daily_limit", 10))
