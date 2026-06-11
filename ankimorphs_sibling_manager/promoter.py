@@ -1,8 +1,9 @@
 import json
 import os
 from datetime import date
+import time
 
-from anki.consts import CARD_TYPE_NEW, QUEUE_TYPE_NEW, QUEUE_TYPE_SUSPENDED
+from anki.consts import CARD_TYPE_NEW, CARD_TYPE_LRN, QUEUE_TYPE_NEW, QUEUE_TYPE_SUSPENDED, QUEUE_TYPE_LRN
 from anki.utils import ids2str
 from aqt import mw
 
@@ -60,8 +61,27 @@ def _get_promotable_card_ids(limit: int) -> list[int]:
     card_ids = mw.col.find_cards(query)
     return list(card_ids[:limit])
 
+def _promote_to_learning(card_ids: list[int]) -> None:
+    """
+    Moves new and suspended-new cards directly into the learning queue
+    by setting their type and queue to LRN with an immediate due timestamp.
+
+    A small timestamp offset (+ position) preserves the relative order
+    of promoted cards within the batch
+    """
+    now = int(time.time())
+
+    for position, card_id in enumerate(card_ids):
+        card = mw.col.get_card(card_id)
+        if card.type == CARD_TYPE_NEW:
+            card.type = CARD_TYPE_LRN
+            card.queue = QUEUE_TYPE_LRN
+            card.due = now + position  # offset keeps batch order intact
+            mw.col.update_card(card)
+
 def _reposition_cards(card_ids: list[int]) -> None:
     """
+    *** OBSOLETE ***
     Moves new cards to the front of the new queue, unsuspending
     suspended-new cards in the process.
 
@@ -87,6 +107,7 @@ def _reposition_cards(card_ids: list[int]) -> None:
 
 def promote_daily_batch() -> int:
     """
+    *** UPDATED TO WORK WITH _promote_to_learning ***
     Promotes up to daily_limit new cards per day. Unsuspends
     suspended-new cards in the process.
 
@@ -110,7 +131,7 @@ def promote_daily_batch() -> int:
     if not card_ids:
         return 0
 
-    _reposition_cards(card_ids)
+    _promote_to_learning(card_ids)
 
     state["last_run"] = today
     state["promoted_today"] = state.get("promoted_today", 0) + len(card_ids)
